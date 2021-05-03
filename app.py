@@ -5,7 +5,7 @@ from resources.emp import Emp,EmpLogin
 
 app=Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS']=True
-app.config['JWT_SECRET_KEY']='coscskillup'
+app.config['JWT_SECRET_KEY']='createsampleapi'
 api=Api(app)
 jwt=JWTManager(app)
 
@@ -13,7 +13,7 @@ jwt=JWTManager(app)
 def missing_token_callback(error):
     return jsonify({
         'error': 'authorization_required',
-        "description": "Request does not contain an access token."
+        "description": "Request has to contain an access token."
     }), 401
 
 @jwt.invalid_token_loader
