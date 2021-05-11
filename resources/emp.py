@@ -2,7 +2,7 @@ from flask_restful import Resource,reqparse
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token,jwt_required
 from db import query
-import requests
+
 class Emp(Resource):
     @jwt_required()
     def get(self):
