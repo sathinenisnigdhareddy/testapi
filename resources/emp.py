@@ -2,19 +2,21 @@ from flask_restful import Resource,reqparse
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token,jwt_required
 from db import query
-
+import requests
 class Emp(Resource):
-    @ jwt_required()
+    @jwt_required()
     def get(self):
         parser=reqparse.RequestParser()
         parser.add_argument('empno',type=int,required=True,help="empno cannot be left blank!")
         data=parser.parse_args()
         try:
-            return query(f"""SELECT * FROM testapi.emp WHERE empno={data['empno']}""")
+            x= query(f"""SELECT * FROM testapi.emp  where empno={data['empno']}""")
+            print(x)
+            return x
         except:
             return {"message":"There was an error connecting to emp table."},500
 
-    @ jwt_required()
+    @jwt_required()
     def post(self):
         parser=reqparse.RequestParser()
         parser.add_argument('empno',type=int,required=True,help="empno cannot be left blank!")
@@ -22,29 +24,31 @@ class Emp(Resource):
         parser.add_argument('job',type=str,required=True,help="job cannot be left blank!")
         parser.add_argument('mgr',type=int,required=True,help="mgr cannot be left blank!")
         parser.add_argument('hiredate',type=str,required=True,help="hiredate cannot be left blank!")
-        parser.add_argument('sal',type=str,required=True,help="sal cannot be left blank!")
-        parser.add_argument('comm',type=str)
+        parser.add_argument('sal',type=int,required=True,help="sal cannot be left blank!")
+        parser.add_argument('comm',type=int)
         parser.add_argument('deptno',type=int,required=True,help="deptno cannot be left blank!")
         parser.add_argument('pass',type=str,required=True,help="password cannot be left blank!")
         data=parser.parse_args()
         try:
-            x=query(f"""SELECT * FROM testapi.emp WHERE empno={data['empno']}""",return_json=False)
+            x=query(f"""SELECT * FROM testapi.emp WHERE empno={data['empno']}""", return_json=False)
+            print(x)
             if len(x)>0: return {"message":"An emp with that empno already exists."},400
         except:
-            return {"message":"There was an error inserting into emp table."},500
+            return {"message":"There was an error inserting123 into emp table."},500
         if data['comm']!=None:
             try:
                 query(f"""INSERT INTO testapi.emp VALUES({data['empno']},
+                                                        '{data['pass']}',
                                                         '{data['ename']}',
                                                         '{data['job']}',
                                                         {data['mgr']},
                                                         '{data['hiredate']}',
-                                                        '{data['sal']}',
-                                                        '{data['comm']}',
-                                                        {data['deptno']},
-                                                        '{data['pass']}')""")
+                                                        {data['sal']},
+                                                        {data['comm']},
+                                                        {data['deptno']}
+                                                        )""")
             except:
-                return {"message":"There was an error inserting into emp table."},500
+                return {"message":"There was an error inserting1234 into emp table."},500
             return {"message":"Successfully Inserted."},201
         else:
             try:
@@ -58,7 +62,7 @@ class Emp(Resource):
                                                         {data['deptno']},
                                                         '{data['pass']}')""")
             except:
-                return {"message":"There was an error inserting into emp table."},500
+                return {"message":"There was an error insert into emp table."},500
             return {"message":"Successfully Inserted."},201
 
 class User():
@@ -90,3 +94,16 @@ class EmpLogin(Resource):
             access_token=create_access_token(identity=user.empno,expires_delta=False)
             return {'access_token':access_token},200
         return {"message":"Invalid Credentials!"}, 401
+
+class emp_dept(Resource):
+    @jwt_required()
+    def get(self):
+            parser=reqparse.RequestParser()
+            parser.add_argument('deptno',type=int,required=True,help="deptno cannot be left blank!")
+            data=parser.parse_args()
+            try:
+                x= query(f"""SELECT * FROM testapi.emp  where deptno={data['deptno']}""")
+            
+                return x
+            except:
+                return {"message":"There was an error connecting to emp table."},500

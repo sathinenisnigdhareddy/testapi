@@ -1,7 +1,7 @@
 from flask import Flask,jsonify
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
-from resources.emp import Emp,EmpLogin
+from resources.emp import *
 
 app=Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS']=True
@@ -26,6 +26,7 @@ def invalid_token_callback(error):
 
 api.add_resource(Emp,'/emp')
 api.add_resource(EmpLogin,'/login')
+api.add_resource(emp_dept,'/emp_dept')
 
 if __name__=='__main__':
     app.run()

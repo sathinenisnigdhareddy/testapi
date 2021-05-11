@@ -3,7 +3,7 @@ from decimal import Decimal
 import pymysql
 
 def query(querystr,return_json=True):
-    connection=pymysql.connect( host='database-2.chkezb75hnpd.us-east-2.rds.amazonaws.com',
+    connection=pymysql.connect( host='database-1.coeu0ojpafxv.us-east-2.rds.amazonaws.com',
                                 user='admin',
                                 password='snigdha0306',
                                 db='testapi',
