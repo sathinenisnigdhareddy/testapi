@@ -10,9 +10,12 @@ class Emp(Resource):
         parser.add_argument('empno',type=int,required=True,help="empno cannot be left blank!")
         data=parser.parse_args()
         try:
-            x= query(f"""SELECT * FROM testapi.emp  where empno={data['empno']}""")
-            print(x)
-            return x
+            x= query(f"""SELECT * FROM testapi.emp  where empno={data['empno']}""",return_json=False)
+            print(len(x))
+            if(len(x)>0):
+                return query(f"""SELECT * FROM testapi.emp  where empno={data['empno']}""")
+            else:
+                return {"message":"empno not found"},400
         except:
             return {"message":"There was an error connecting to emp table."},500
 
