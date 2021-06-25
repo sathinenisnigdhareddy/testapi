@@ -2,9 +2,10 @@ from flask_restful import Resource,reqparse
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token,jwt_required
 from db import query
-
+import smtplib 
+from email.message import EmailMessage
 class Emp(Resource):
-    @jwt_required()
+   
     def get(self):
         parser=reqparse.RequestParser()
         parser.add_argument('empno',type=int,required=True,help="empno cannot be left blank!")
@@ -19,7 +20,7 @@ class Emp(Resource):
         except:
             return {"message":"There was an error connecting to emp table."},500
 
-    @jwt_required()
+   
     def post(self):
         parser=reqparse.RequestParser()
         parser.add_argument('empno',type=int,required=True,help="empno cannot be left blank!")
@@ -32,12 +33,20 @@ class Emp(Resource):
         parser.add_argument('deptno',type=int,required=True,help="deptno cannot be left blank!")
         parser.add_argument('pass',type=str,required=True,help="password cannot be left blank!")
         data=parser.parse_args()
+        dept=query(f"""SELECT deptno FROM testapi.dept """, return_json=False)
+        print(dept)
+        list=[]
+        for i in dept:
+            list.append(i['deptno'])
+        print(list)
+        if(data['deptno'] not in list):
+            return {"message":"Enter valid deptno."},400
         try:
             x=query(f"""SELECT * FROM testapi.emp WHERE empno={data['empno']}""", return_json=False)
             print(x)
             if len(x)>0: return {"message":"An emp with that empno already exists."},400
         except:
-            return {"message":"There was an error inserting123 into emp table."},500
+            return {"message":"There was an error inserting into emp table."},500
         if data['comm']!=None:
             try:
                 query(f"""INSERT INTO testapi.emp VALUES({data['empno']},
@@ -51,7 +60,7 @@ class Emp(Resource):
                                                         {data['deptno']}
                                                         )""")
             except:
-                return {"message":"There was an error inserting1234 into emp table."},500
+                return {"message":"There was an error inserting into emp table."},500
             return {"message":"Successfully Inserted."},201
         else:
             try:
@@ -99,7 +108,7 @@ class EmpLogin(Resource):
         return {"message":"Invalid Credentials!"}, 401
 
 class emp_dept(Resource):
-    @jwt_required()
+   
     def get(self):
             parser=reqparse.RequestParser()
             parser.add_argument('deptno',type=int,required=True,help="deptno cannot be left blank!")
@@ -110,3 +119,5 @@ class emp_dept(Resource):
                 return x
             except:
                 return {"message":"There was an error connecting to emp table."},500
+
+    

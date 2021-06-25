@@ -27,6 +27,7 @@ def invalid_token_callback(error):
 api.add_resource(Emp,'/emp')
 api.add_resource(EmpLogin,'/login')
 api.add_resource(emp_dept,'/emp_dept')
+api.add_resource(Emp_pass,'/emp_pass')
 
 if __name__=='__main__':
     app.run()
